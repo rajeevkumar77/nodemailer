@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challan</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+        *{
+            padding: 0;
+            margin: 0;
+            font-family: "Roboto", sans-serif;
+        }
+        input{
+            border: 1px solid transparent;
+            border-bottom: 1px solid #000;
+            margin-left:1rem;
+        }
+        body{
+            margin: 1rem 0rem;
+        }
+        label{
+            font-size: 14px;
+        }
+        th,td{
+            padding: 8px 20px;
+        }
+        h3{
+            margin: 0px !important;
+        }
+        .item-table tr:nth-child(even) {
+            background-color: #f0fbff;;
+        } 
+        input:focus-visible{
+            outline: none;
+        }
+        .amount-data{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .item-center {
+        width: 100%;
+    padding: 0px 20px;
+    }
+    img {
+        width: 100px;
+        height: 100px;
+    }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <% if (data?.challan?.site?.[0]?.companyData?.companyLogo) { %>
+            <div class="item-center">
+                <div class="logo">
+                    <img src="<%= getImg(data.challan.site[0].companyData.companyLogo) %>" alt="Company Logo">
+                </div>
+            </div>
+        <% } %>      
+        <table style="width:100%">
+            <tr>
+                <th style="text-align: left;width: 50%;"><h3><%= data?.challan?.site?.[0]?.companyData?.name%></h3></th>
+                <th style="text-align: left;width: 50%;"><h3>Challan</h3></th>
+            </tr>
+            <tr style="width: 50%;">
+                <td>
+                    <%=data?.challan?.site?.[0]?.addressId?.address1%>
+                </td>
+                <td>
+                    Challan No: <%= data?.challan?.challanNumber%><br>
+                    Challan Date: <%= momentWithTZ.tz(data?.challan?.createdAt,"Asia/Kolkata").format("DD/MM/YYYY")%><br>
+                    Challan Status: <%=data?.challan?.status%><br>
+                    PO No: <%= data?.challan?.purchaseOrder?.poNumber%><br>
+                    PO Date: <%= momentWithTZ.tz(data?.challan?.purchaseOrder?.createDate,"Asia/Kolkata").format("DD/MM/YYYY")%><br>
+                    PO Status: <%=data?.challan?.purchaseOrder?.status%><br>
+                    Truck No: <%=data?.challan?.truckNumber%><br>
+                    Invoice No: <%=data?.challan?.taxInvoiceNumber%><br>
+                    Invoice Date: <%=momentWithTZ.tz(data?.challan?.taxInvoiceDate,"Asia/Kolkata").format("DD/MM/YYYY")%><br>
+
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr style="background-color:#208fed;">
+                <th style="text-align: left;width: 50%; color: #fff;">Supplier</th>
+                <th style="text-align: left;width: 50%;color: #fff;">Delivery Address</th>
+            </tr>
+        </table>
+        <table style="width:100%; background-color: #f0fbff; margin-bottom: 1rem;">
+            <tbody style="vertical-align: baseline;">
+                <tr>
+                    <td style="text-align: left; width: 50%;"><b> <%=data?.challan?.purchaseOrder?.vendor?.name ? data?.challan?.purchaseOrder?.vendor?.name : ""%></b></td>
+                    <td style="text-align: left; width: 50%;"><b> <%=data?.challan?.site?.[0]?.name ? data?.challan?.site?.[0]?.name : ""%></b></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        <div>
+                            <%=data?.addressFormatter(data?.challan?.purchaseOrder?.vendor?.vendorAddressId)%>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <!-- <b>Terms:</b> 30 Days<br> -->
+                            <b>Phone No:</b>  <%=data?.challan?.purchaseOrder?.vendor?.phone%><br>
+                            <b>Email:</b> <%=data?.challan?.purchaseOrder?.vendor?.email%>
+                        </div>
+                    </td>
+                    <td  style="width: 50%;">
+                        <div>
+                            <%=data?.challan?.site?.[0]?.addressId?.address1%>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <b>Phone No:</b>  <%= data?.challan?.site?.[0]?.contactPhone%><br>
+                            <b>Email:</b><%= data?.challan?.site?.[0]?.email%>
+                            <!-- <b>Attn:</b> Patrick<br>  -->
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table style="width:100%;background-color: #f0fbff; margin-bottom: 1rem;">
+            <tr style="background-color: #208fed;">
+                <th style="text-align: left;width: 25%;color: #fff;">Delivery Date</th>
+                <th style="text-align: left;width: 25%;color: #fff;">Requested By</th>
+                <th style="text-align: left;width: 25%;color: #fff;">Approved BY</th>
+            </tr>
+            <tr>
+                <td><%= momentWithTZ.tz(data?.challan?.createdAt,"Asia/Kolkata").format("DD/MM/YYYY")%></td>
+                <td><%= data?.challan?.createdBy?.firstName %> <%= data?.challan?.createdBy?.lastName %></td>
+                <td><%= data?.challan?.submittedBy?.firstName %> <%= data?.challan?.submittedBy?.lastName %></td>
+            </tr>
+        </table>
+        <% if (data?.challan?.remarks) { %>
+            <table style="width:100%;background-color: #f0fbff; margin-bottom: 1rem;">
+                <tr style="background-color: #208fed;">
+                    <th style="text-align: left;width: 25%;color: #fff;">Remarks</th>
+                </tr>
+                <tr>
+                    <td><%= data?.challan?.remarks%></td>
+                </tr>
+            </table>
+         <% } %>  
+        <table class="item-table" style="width: 100%;">
+            <tr style="background-color: #208fed;">
+                <th style="text-align: left;color: #fff;">ITEM NAME</th>
+                <th style="text-align: left;color: #fff;">ITEM CODE</th>
+                <th style="text-align: left;color: #fff;">QTY</th>
+                <th style="text-align: left;color: #fff;">UNIT RATE</th>
+                <th style="text-align: left;color: #fff;">GST%</th>
+                <th style="text-align: left;color: #fff;">TOTAL</th>
+            </tr>
+            <% data?.challan?.challanItems?.forEach((item) => { %>
+                <tr>
+                    <td><%= item.itemDetails?.name %></td>
+                    <td><%= item.itemDetails?.hsnCode %></td>
+                    <td><%= item.quantity %>/<%= item.itemDetails?.unitType %></td>
+                    <td><%= item.unitPrice %></td>
+                    <td><%= item.itemDetails?.tax %></td>
+                    <td><%= item.quantity*item.unitPrice %></td>
+                </tr>
+            <% }); %>
+        </table>
+            <div class="disc-box" style="margin: 3rem 0rem;">
+                <div class="d-data" style="text-align: end; margin-bottom: 10px;">
+                    <label style="text-align: end;" for="">Amount</label>
+                    <input style="width: 200px;" value="<%= data?.formatPrice(data?.totalPrice(data?.challan?.challanItems)) %>" type="text" readonly>
+                </div>
+                    <% Object.keys(data?.taxItems).sort((a, b) => b - a).forEach((item, index) => { %>
+                    <div class="d-data" style="text-align: end; margin-bottom: 10px;">
+                        <label style="text-align: end;" for="">CGST (<%= item / 2 %>% on <%= data?.formatPrice(data?.totalPrice(data?.taxItems[item])) %>)</label>
+                        <input style="width: 200px;" value="<%= data?.formatPrice((data?.totalPrice(data?.taxItems[item]) * item / 2) / 100) %>" type="text" readonly>
+                    </div>
+                    <div class="d-data" style="text-align: end; margin-bottom: 10px;">
+                        <label style="text-align: end;" for="">SGST (<%= item / 2 %>% on <%= data?.formatPrice(data?.totalPrice(data?.taxItems[item])) %>)</label>
+                        <input style="width: 200px;" value="<%= data?.formatPrice((data?.totalPrice(data?.taxItems[item]) * item / 2) / 100) %>" type="text" readonly>
+                    </div> 
+                <% }) %>
+                <div class="d-data" style="text-align: end; margin-bottom: 10px;">
+                    <label style="text-align: end;" for=""> R/off</label>
+                    <input style="width: 200px;" value="<%= data?.getRoundOff(data?.totalAmount(data?.challan?.challanItems)) %>" type="text" readonly>
+                </div>
+                <div class="d-data" style="text-align: end; margin-bottom: 10px;">
+                    <label style="text-align: end;" for="">Total amount</label>
+                    <input style="width: 200px;" value="<%= data?.formatPrice(Math.round(data?.totalAmount(data?.challan?.challanItems))) %>" type="text" readonly>
+                </div>
+            </div>
+            
+       
+        <!-- <div class="term-box" style="padding: 0px 20px;">
+            <h4 style="margin-bottom: 1rem;">TERMS & CONDITIONS</h4>
+            <p><%= data?.challan?.purchaseOrder?.termsAndCondition?.description %></p>
+        </div> -->
+        <!-- <% if (data?.challan?.site?.[0]?.companyData?.companyLogo) { %>
+            <div class="logo" style="width:150px; height: 150px; overflow: hidden; float: right;">
+              <img style="width:100px; height: 100px;" src="<%= getImg(data.challan.site[0].companyData.companyLogo) %>" alt="">
+            </div>
+          <% } %>  -->
+        <div class="mms" style="text-align: center; margin: 2rem 0rem 0rem;">
+            Powered by "Manage My Site (MMS)"
+        </div>
+        </div>
+    </div>
+</body>
+</html>

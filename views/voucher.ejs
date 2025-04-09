@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+        *{
+            padding: 0;
+            margin: 0;
+            font-family: "Roboto", sans-serif;
+        }
+        .disc-box table,.disc-box th,.disc-box td {
+            border: .5px solid black;
+            border-spacing: 0px !important;
+        }
+        .disc-box th,
+        .disc-box td{
+            padding: 6px 14px;
+            height: 15px;
+        }
+        input:focus-visible{
+            border: 1px solid transparent;
+            outline: none;
+        }
+        .item-center {
+        width: 100%;
+        padding-right: 2rem;
+    }
+    img {
+        width: 100px;
+        height: 100px;
+    }      
+    </style>
+</head>
+<body>
+    <div class="voucher" style="padding: 0px 20px;margin: 2rem 0rem;">
+        <% if (data?.voucher?.site?.companyData?.companyLogo) { %>
+            <div class="item-center">
+                <div class="logo">
+                    <img src="<%= getImg(data?.voucher?.site?.companyData?.companyLogo) %>" alt="Company Logo">
+                </div>
+            </div>
+        <% } %>  
+        <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <th style="text-align: center;"><h1><%=data?.voucher?.site?.companyData?.name%> <br><span style="font-size: 15px;">ADDRESS: <%=data?.voucher?.site?.addressId?.address1%>
+                        <% if (data?.voucher?.site?.contactPhone) { %>
+                            & Contact: <%=data?.voucher?.site?.contactPhone%>
+                         <% } %>  
+                       
+                    
+                    </span></h1></th>
+                </tr>
+            </tbody>
+        </table>
+        <h3 style="text-align: end;padding-right: 2rem;margin-top: 4rem;">PETTY <%=data?.voucher?.voucherType?.toLowerCase()=="cash" ? "CASH" : "BANK"%> VOUCHER</h3>
+        <div class="disc-box" style="margin: 1rem 0rem;">
+            <table style="display: block;float: right;border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <th >
+                        <p style="text-align: start;">
+                            <span><label for="">NO .</label></span>
+                            <span style="padding-left: 10px;"><%=data?.voucher?.voucherNumber%></span>
+                        </p>
+                    </th>
+                </tr>
+                <tr style="border-top: 1px solid black;">
+                    
+                    <th>
+                        <p style="text-align: start;">
+                            <span><label for="">Date</label></span>
+                            <span style="padding-left: 10px;"><%=momentWithTZ.tz(data?.voucher?.createDate,"Asia/Kolkata").format("DD/MM/YYYY")%></span>
+                        </p>
+                    </th>
+                </tr>
+            </table>
+            <table style="width: 100%; border: 1px solid black; border-collapse: separate;">
+                <tr>
+                    <th style="width:5%; text-align: start; border-right: 1px solid transparent;">Payee:</th>
+                    <th style="width: 95%; border-left: 1px solid transparent;"><p style="width: 100%; border: 1px solid transparent;padding: 4px;text-align: start;"><%=data?.voucher?.name%></p></th>
+                </tr>
+            </table>
+            <table style="width: 100%;border: 1px solid black; border-collapse: collapse;">
+                <tr style="border-top: 1px solid transparent;">
+                    <th style="text-align: center;width: 70%;border-bottom: 1px solid #000;">PARTICULARS</th>
+                    <th style="text-align: center; width: 30%;border-bottom: 1px solid #000;">AMOUNT</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #000;">
+                    <td>
+                        <p style="width: 100%; border: 1px solid transparent; text-transform: capitalize;"><%=data?.voucher?.expenseType%></p>
+                    </td>
+                    <td style="border-left: 1px solid #000;">
+                        <p style="width: 100%; border: 1px solid transparent;"><%= data?.formatPrice(data?.voucher?.amount)%></p>
+                    </td>
+                </tr>  
+                <tr style="border-bottom: 1px solid #000;">
+                    <td>
+                        <p style="width: 100%; border: 1px solid transparent;"><%=data?.voucher?.voucherType?.toLowerCase()=="cash" ? "Cash" : "Bank"%></p>
+                    </td>
+                    <td style="border-left: 1px solid #000;">
+                        <p style="width: 100%; border: 1px solid transparent;"></p>
+                    </td>
+                </tr>
+                  <% if (data?.voucher?.voucherType?.toLowerCase()!="cash") { %>
+                     <tr style="border-bottom: 1px solid #000;">
+                        <td>
+                           <p style="width: 100%; border: 1px solid transparent;"><%=data?.voucher?.bankName%> | <%=data?.voucher?.chequeNumber%> | <%=moment(data?.voucher?.chequeDate).format("DD/MM/YYYY")%></p>
+                        </td>
+                        <td style="border-left: 1px solid #000;">
+                           <p style="width: 100%; border: 1px solid transparent;"></p>
+                        </td>
+                  </tr>
+                  <% } %>
+                  <% if (data?.voucher?.challanNumber) { %>
+                     <tr style="border-bottom: 1px solid #000;">
+                        <td>
+                           <p style="width: 100%; border: 1px solid transparent;"><%=data?.voucher?.challanNumber%></p>
+                        </td>
+                        <td style="border-left: 1px solid #000;">
+                           <p style="width: 100%; border: 1px solid transparent;"></p>
+                        </td>
+                  </tr>
+                  <% } %>  
+                  <% if (data?.voucher?.remarks) { %>
+                     <tr style="border-bottom: 1px solid #000;">
+                        <td>
+                           <p style="width: 100%; border: 1px solid transparent;"><%=data?.voucher?.remarks%></p>
+                        </td>
+                        <td style="border-left: 1px solid #000;">
+                           <p style="width: 100%; border: 1px solid transparent;"></p>
+                        </td>
+                  </tr>
+                  <% } %>  
+                <tr style="vertical-align: middle;">
+                    <th style="width: 70%; text-align: start;">
+                        <p>
+                            <span>TOTAL :</span>
+                            <span style="width: 70%; border: 1px solid transparent;"><%=data?.formatPrice(data?.voucher?.amount)%></span>
+                        </p>
+                        <!-- <span></span><span><p style="width: 70%; border: 1px solid transparent;padding: 4px 4px 4px 20px; "></p></span></th> -->
+                        <td style="width: 30%; border-left: 1px solid #000;">
+                            <p style="width: 100%; border: 1px solid transparent;"><%=data?.formatPrice(data?.voucher?.amount)%></p> 
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%; border: 1px solid black; border-collapse: collapse;">
+                    <tr>
+                        <th style="text-align: center; width: 33.33%;padding: 1rem 0rem; border-right: 1px solid transparent;"><p style="width: 60%; border: 1px solid transparent;border-bottom: 1px dashed #ccc;text-align: center;display: block;margin: 1rem auto 0rem;"><%=data?.voucher?.createdBy?.firstName%> <%=data?.voucher?.createdBy?.lastName%></p><br>Prepared by:</th>
+                        <th style="text-align: center; width: 33.33%;padding: 1rem 0rem; border-left: 1px solid transparent;border-right: 1px solid transparent;"><p style="width: 60%; border: 1px solid transparent;border-bottom: 1px dashed #ccc;text-align: center;display: block;margin: 1rem auto 0rem;"><%=data?.voucher?.approvedBy?.firstName%> <%=data?.voucher?.approvedBy?.lastName%></p><br>Approved by:</th>
+                        <th style="text-align: center; width: 33.33%;padding: 1rem 0rem;  border-left: 1px solid transparent;"><p style="width: 60%; border: 1px solid transparent;border-bottom: 1px dashed #ccc;text-align: center;display: block;margin: 1rem auto 0rem;"><%=data?.voucher?.name%></p><br>Reciept by:</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="mms" style="text-align: center; margin: 4rem 0rem 0rem;">Powered by "Manage My Site (MMS)"</div>
+        </div>
+    </body>
+    </html>
