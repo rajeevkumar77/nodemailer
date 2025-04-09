@@ -22,7 +22,7 @@ exports.sendMail = async (req, res, next) => {
 			return res.status(200).json({ status: 1, message: Messages.LOGIN_SUCCESS });
 		});
 
-		return res.status(200).json({ status: 1, message: Messages.LOGIN_SUCCESS });
+		// return res.status(200).json({ status: 1, message: Messages.LOGIN_SUCCESS });
 
 		
 	} catch (error) {
